@@ -5,25 +5,114 @@
 
     name: name
     password: password
+
+    Label: 
+        size_hint:.25, .25
+        text: "you are logged in"
+        pos_hint: {'x':10,'y':10}
     
-    GridLayout:
-        cols:2
+    FloatLayout:
         size: root.width, root.height
         Label:
+            size_hint: .75,.75
+            pos_hint : {'x':0, 'y':0}
             text: "Username"
+            
         TextInput:
+            size_hint: .3,.2
+            pos_hint : {"center_x":300,"center_y":200}
             id: name
         Label:
+            size_hint: .3,.2
+            pos_hint : {"center_x":300,"center_y":200}
             text: "Password"
         TextInput:
+            size_hint: .3,.2
+            pos_hint : {"x":300,"y":200}
             id:password
-        GridLayout:
-            cols: 1
-            Button:
-                text: "Sign in"
-                on_press: root.btn()
-
         
+        
+        Button:
+            size_hint: .3,.2
+            pos_hint : {"center_x":300,"center_y":200}
+            text: "Sign in"
+            on_press: root.btn()
+
+<LoginScreen>:
+    username: username
+    password: password
+
+    
+    StackLayout:
+    
+        padding: 50
+        orientation: 'lr-tb'
+        Button:
+            text: 'Go to Main screen'
+            on_press: root.manager.current = 'mainScreen'
+            size_hint: .2,.1
+        Button: 
+            background_color: 0,1,1,1
+            text: 'login will it work?'
+            on_press: root.login()
+            size_hint: .2,.1
+
+        TextInput:
+            id: username
+            text: 'enter username'
+            size_hint: .8,.1
+            
+            
+
+        TextInput:
+            id: password
+            text: 'enter password'
+            size_hint: .8,.1
+        
+       
+        
+
+<MainScreen>:
+    StackLayout:
+        padding: 50
+        
+        Button:
+            text: 'Go to LoginScreen'
+            on_press: root.manager.current = 'login'
+            size_hint: .2,.2
+            pos_hint: {'x':0,'top':.5}
+        Button: 
+            text: 'add songs'
+            on_press: root.manager.current = 'addSongs'
+            size_hint: .2,.2
+        Button:
+            text: ' play songs'
+            on_press: root.manager.current = 'playSongs'
+            size_hint: .2,.2
+
+<AddSongs>:
+    StackLayout:
+        padding: 50
+        Button:
+            text: 'go back to login'
+            on_press: root.manager.current = 'login'
+            size_hint: .2,.1
+            pos_hint: {"right":1,"top":.1}
+        
+
+<PlaySongs>:
+    StackLayout:
+        Button:
+            text: 'play Let it go'
+            on_press: root.playFrozen()
+            size_hint:.2,.1
+        Button:
+            text: ' go back to main'
+            on_press: root.manager.current = 'mainScreen'
+            size_hint: .2,.1
+            pos_hint: {'right':0.1,'bottom':.1}
+
+            
 
       
 
