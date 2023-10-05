@@ -1,4 +1,0 @@
-CREATE TABLE "PAVANS"
-    (
-        "WORKER_CODE" char(^=6) NOT NULL PRIMARY KEY
-    );
