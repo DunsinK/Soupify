@@ -91,13 +91,39 @@
             size_hint: .2,.2
 
 <AddSongs>:
+    songfile: songfile
+    songname: songname
+
     StackLayout:
         padding: 50
         Button:
             text: 'go back to login'
             on_press: root.manager.current = 'login'
             size_hint: .2,.1
-            pos_hint: {"right":1,"top":.1}
+            pos_hint: {"right":0,"top":.1}
+        TextInput:
+            id:songname
+            multiline: false
+            text: 'song name'
+            size_hint: .8,.1
+        Button:
+            text: 'open file exploer'
+            size_hint: .2,.1
+            on_press: root.openFileExplorer()
+        TextInput:
+            id: songfile
+            text: 'File Location'
+            size_hint: .8,.1
+        Button:
+            text: 'create song'
+            on_press: root.addSong()
+            size_hint: .2,.1
+            
+        FileChooser:
+            FileChooserIconLayout
+            FileChooserListLayout
+            
+        
         
 
 <PlaySongs>:

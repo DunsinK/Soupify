@@ -13,10 +13,19 @@ from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.popup import Popup
 import SoupifyLogic as Sl
 from kivy.properties import ObjectProperty
 import winsound
+from tkinter import filedialog
+from kivy.config import Config
 
+
+class Song():
+    def __init__(self,name,fileLocation):
+        pass
+
+    
 
 class SpotifyGrid(Widget): ## root widget
     name = ObjectProperty(None)
@@ -40,10 +49,36 @@ class LoginScreen(Screen):
 class MainScreen(Screen):
     pass
 class AddSongs(Screen):
-    songName = ObjectProperty(None)
-    songFile = ObjectProperty(None)
+    songname = ObjectProperty(None)
+    songfile = ObjectProperty(None)
     def addSong(self):
-        Sl.addSong(self.songName,self.songFile)
+        try: 
+            if(os.path.isfile(self.songfile)):
+                Sl.addSongs(self.songname.text,self.songfile.text)
+            else:
+                print("it didn't work")
+                
+            
+        except:
+            layout=GridLayout(cols = 1, padding = 10)
+
+            popupLabel = Label(text = "Something went wront")
+            closeButton = Button(text = "close", background_color = [1,0,0,1])
+
+            layout.add_widget(popupLabel)
+            layout.add_widget(closeButton)
+
+            popup = Popup(title = 'notification Popup!', content = layout, size_hint = (None,None), size = (200,200))
+            popup.open()
+
+            closeButton.bind(on_press = popup.dismiss)
+
+
+    def openFileExplorer(self):
+        print('this is working')
+        songName = filedialog.askopenfilename()
+        self.songfile.text = songName
+
 class PlaySongs(Screen):
     def playFrozen(self):
         Sl.playFrozen()
