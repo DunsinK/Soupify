@@ -25,7 +25,7 @@ class Song():
     def __init__(self,name,fileLocation):
         pass
 
-    
+
 
 class SpotifyGrid(Widget): ## root widget
     name = ObjectProperty(None)
@@ -42,18 +42,49 @@ class SpotifyGrid(Widget): ## root widget
 class LoginScreen(Screen):
     username = ObjectProperty(None)
     password = ObjectProperty(None)
+
+
     def login(self):
-        print(self.username.text)
-        print(self.password.text)
-        Sl.login(username= self.username.text, password= self.password.text)
+        try:
+            response = Sl.login(username= self.username.text, password= self.password.text) 
+            
+            layout=GridLayout(cols = 1, padding = 10)
+
+            popupLabel = Label(text = response)
+            closeButton = Button(text = "close", background_color = [1,0,0,1])
+
+            layout.add_widget(popupLabel)
+            layout.add_widget(closeButton)
+
+            popup = Popup(title = 'notification Popup!', content = layout, size_hint = (None,None), size = (200,200))
+            popup.open()
+
+            closeButton.bind(on_press = popup.dismiss)
+        except:
+            layout=GridLayout(cols = 1, padding = 10)
+
+            popupLabel = Label(text = "Something went wrong")
+            closeButton = Button(text = "close", background_color = [1,0,0,1])
+
+            layout.add_widget(popupLabel)
+            layout.add_widget(closeButton)
+
+            popup = Popup(title = 'notification Popup!', content = layout, size_hint = (None,None), size = (200,200))
+            popup.open()
+
+            closeButton.bind(on_press = popup.dismiss)
+
+            
+    
 class MainScreen(Screen):
     pass
 class AddSongs(Screen):
     songname = ObjectProperty(None)
     songfile = ObjectProperty(None)
+
     def addSong(self):
         try: 
-            if(os.path.isfile(self.songfile)):
+            if(os.path.isfile(self.songfile.text)):
                 Sl.addSongs(self.songname.text,self.songfile.text)
             else:
                 print("it didn't work")
