@@ -1,60 +1,88 @@
 import os
 import winsound
+import shutil
 from tkinter import filedialog
+import kivy
+import kivy.uix.button as Button
 
 
-
-
-songDict = {}
 accountFile = 'C:\\Users\\dunsi\\OneDrive\\Desktop\Soupify\\Accounts\\'
-songFile = 'C:\\Users\\dunsi\\OneDrive\\Desktop\\Soupify\\Music\\'
+songFolder = 'C:\\Users\\dunsi\\OneDrive\\Desktop\\Soupify\\Music\\'
 savedUserFile = None
 
-def loadSongs(username):#returns a dictionary of every song
-    global songDict 
-    with open (username+".txt","r") as spotifyDataFile:
-        for i, song in enumerate(spotifyDataFile):
+def loadSongs():# should load songs after every time playsongs is called/entered 
+    pass
+    if(savedUserFile == None):
+        print("get gud nub")
+        
+    pass
+    # take username and file then get all songs
+    listOfSongs = []
+    userFileText = ''
+   
+    with open(savedUserFile) as file:
+        userFileText = [line.rstrip() for line in file]
+        
+    for line in open(savedUserFile):
+        listOfSongs += line
+    print(listOfSongs)
+    pass
+    '''# make songs into buttons
+    listOfSongButtons = []
+    for song in listOfSongs:
+        makeSongButton(song)
+    def makeSongButton(songName, songImg):
+        btn = Button(text="song")'''
+    
+    
 
-            print(i)
-    return songDict
+
 
 def playSong(songFileName):
     winsound.PlaySound(songFileName)
 
 def playFrozen():
-    winsound.PlaySound('Frozen.wav',winsound.SND_ASYNC)
+    winsound.PlaySound(songFolder+'Frozen.wav',winsound.SND_ASYNC)
 
-def addSongs(songName, SongFile):
-    global savedUserFile
-    file = open(savedUserFile)
-    file.write(songName+","+SongFile)
-    file.close
+def addSongs(songName, originalSongFile):
+    shutil.copy(originalSongFile,songFolder)
+    inProgramSongFileName = originalSongFile.split('/')[-1]
+    try:
+        os.rename(songFolder+inProgramSongFileName,songFolder+songName+'.mp3')
+    except:
+        print('song already exists')
+    
+    
+    with open(savedUserFile, 'a') as file:
+        file.write('songname: '+songName+'\n')
+        
 
 def login(username, password):
     
     global savedUserFile
-    print(accountFile.__dir__)
+    #print(accountFile.__dir__)
     if(not os.path.exists(accountFile+username+'.txt')):
         
         with open(accountFile+username+'.txt','a') as file:
-            file.write("password: "+password)
+            file.write('password: '+password+'\n')
             # if password = fir=st line then upload the songs and open the account else return bad somehow :)
+            #loadSongs(username)
+            savedUserFile = accountFile+username+'.txt'
         return 'you made a new account' 
         
     else:
-        with  open(accountFile+ username+'.txt','a') as f:
-            passwordString = 'password: '+password
-            
+        givenPassword = None
+        passwordString = None
+        with open(accountFile+ username+'.txt','r') as file:
+            passwordString = 'password: '+password+'\n'
+            givenPassword = file.readline()
         
-        '''
-        print (passwordString == f.readline())
-        if( passwordString == f.readline()):
-            savedUserFile = accountFile+ username+".txt"
-            print('loading'+ savedUserFile)
-            file.close()
-            return 'you are logged into '+ username
+        #print(givenPassword  +" the real password is "+ passwordString)
+        if(givenPassword == passwordString):
+            #loadSongs(username)
+            savedUserFile = accountFile+username+'.txt'
+            return 'you are logged into '+username
         else:
-            file.close()
-            return 'wrong username or password :('
-            '''
-    return 'creation works'
+            return 'wrong password or username was given'
+            
+    

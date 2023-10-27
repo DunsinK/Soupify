@@ -21,6 +21,11 @@ from tkinter import filedialog
 from kivy.config import Config
 
 
+#creates screen manager
+sm = ScreenManager()
+
+
+
 class Song():
     def __init__(self,name,fileLocation):
         pass
@@ -42,7 +47,16 @@ class SpotifyGrid(Widget): ## root widget
 class LoginScreen(Screen):
     username = ObjectProperty(None)
     password = ObjectProperty(None)
+    popup = Popup()
 
+
+    def hide(self):
+        self.password.password = not self.password.password == True
+    
+    def toMainScreen(self, a, b,popup):
+                if a == 'you are logged into '+ b or a == 'you made a new account':
+                    sm.current = 'mainScreen'
+                return self.popup.dismiss
 
     def login(self):
         try:
@@ -56,10 +70,11 @@ class LoginScreen(Screen):
             layout.add_widget(popupLabel)
             layout.add_widget(closeButton)
 
-            popup = Popup(title = 'notification Popup!', content = layout, size_hint = (None,None), size = (200,200))
-            popup.open()
+            self.popup = Popup(title = 'notification Popup!', content = layout, size_hint = (None,None), size = (200,200))
+            self.popup.open()
 
-            closeButton.bind(on_press = popup.dismiss)
+            closeButton.bind(on_press = self.toMainScreen(response,self.username.text,self.popup))
+
         except:
             layout=GridLayout(cols = 1, padding = 10)
 
@@ -77,23 +92,49 @@ class LoginScreen(Screen):
             
     
 class MainScreen(Screen):
-    pass
+    def toPlaySongs(self):
+        sm.current = 'playSongs'
+        Sl.loadSongs()
+
 class AddSongs(Screen):
     songname = ObjectProperty(None)
     songfile = ObjectProperty(None)
 
-    def addSong(self):
-        try: 
-            if(os.path.isfile(self.songfile.text)):
-                Sl.addSongs(self.songname.text,self.songfile.text)
-            else:
-                print("it didn't work")
-                
-            
+    def addSong(self):   
+        
+        if(os.path.isfile(self.songfile.text)):
+            Sl.addSongs(self.songname.text,self.songfile.text)
+            layout=GridLayout(cols = 1, padding = 10)
+
+            popupLabel = Label(text = "Song Created")
+            closeButton = Button(text = "close", background_color = [1,0,0,1])
+
+            layout.add_widget(popupLabel)
+            layout.add_widget(closeButton)
+
+            popup = Popup(title = 'notification Popup!', content = layout, size_hint = (None,None), size = (200,200))
+            popup.open()
+
+            closeButton.bind(on_press = popup.dismiss)
+        else:
+            layout=GridLayout(cols = 1, padding = 10)
+
+            popupLabel = Label(text = "Bad File")
+            closeButton = Button(text = "close", background_color = [1,0,0,1])
+
+            layout.add_widget(popupLabel)
+            layout.add_widget(closeButton)
+
+            popup = Popup(title = 'notification Popup!', content = layout, size_hint = (None,None), size = (200,200))
+            popup.open()
+
+            closeButton.bind(on_press = popup.dismiss)
+        try:
+                pass
         except:
             layout=GridLayout(cols = 1, padding = 10)
 
-            popupLabel = Label(text = "Something went wront")
+            popupLabel = Label(text = "Something went wronger")
             closeButton = Button(text = "close", background_color = [1,0,0,1])
 
             layout.add_widget(popupLabel)
@@ -106,28 +147,25 @@ class AddSongs(Screen):
 
 
     def openFileExplorer(self):
-        print('this is working')
         songName = filedialog.askopenfilename()
         self.songfile.text = songName
 
 class PlaySongs(Screen):
+    def loadSongs(self):
+        Sl.loadSongs()
     def playFrozen(self):
         Sl.playFrozen()
         print("you tryed to play frozen")
 
 
-
 class SpotifyApp(App): # builds the app
     def build(self):
-        sm = ScreenManager()
         sm.add_widget(LoginScreen(name='login'))
         sm.add_widget(MainScreen(name= "mainScreen"))
         sm.add_widget(AddSongs(name="addSongs"))
-        sm.add_widget(PlaySongs(name = "playSongs"))
-
+        sm.add_widget(PlaySongs(name = "playSongs")) 
         return sm
     
-
 
 
 if __name__ == '__main__': #runs the code

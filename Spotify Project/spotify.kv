@@ -48,8 +48,8 @@
         padding: 50
         orientation: 'lr-tb'
         Button:
-            text: 'Go to Main screen'
-            on_press: root.manager.current = 'mainScreen'
+            text: 'hide password'
+            on_press: root.hide()
             size_hint: .2,.1
         Button: 
             background_color: 0,1,1,1
@@ -59,15 +59,16 @@
 
         TextInput:
             id: username
-            text: 'enter username'
+            hint_text: 'enter username'
             size_hint: .8,.1
             
             
 
         TextInput:
             id: password
-            text: 'enter password'
+            hint_text: 'enter password'
             size_hint: .8,.1
+            password:True
         
        
         
@@ -87,7 +88,7 @@
             size_hint: .2,.2
         Button:
             text: ' play songs'
-            on_press: root.manager.current = 'playSongs'
+            on_press: root.toPlaySongs()
             size_hint: .2,.2
 
 <AddSongs>:
@@ -117,10 +118,7 @@
             text: 'create song'
             on_press: root.addSong()
             size_hint: .2,.1
-            
-        FileChooser:
-            FileChooserIconLayout
-            FileChooserListLayout
+
             
         
         
@@ -136,6 +134,10 @@
             on_press: root.manager.current = 'mainScreen'
             size_hint: .2,.1
             pos_hint: {'right':0.1,'bottom':.1}
+        Button:
+            text: ' reload'
+            on_press: root.loadSongs()
+            size_hint:.2,.1
 
             
 
